@@ -1,28 +1,78 @@
-const Knex = require("knex");
+// ---------------------------------------------------------------------------------------------------------------------
+// Insert Tests
+// ---------------------------------------------------------------------------------------------------------------------
 
-const { DB2Dialect } = require("../../../dist/");
+const Knex = require('knex');
+
+const { DB2Dialect } = require('../../../dist/');
+
+const testSql = require('../../utils/testSql');
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 const knex = Knex({
     client: DB2Dialect,
 });
 
-const testSql = require("../../utils/testSql");
+// ---------------------------------------------------------------------------------------------------------------------
 
-describe("Inserts", () =>
+describe('Inserts', () =>
 {
-    it("handles insert", () =>
+    it('supports basic insert', () =>
     {
         const record = {
             x: 1,
             y: 2,
         };
-        const query = knex.insert(record).into("testtable");
+        const query = knex.insert(record).into('testtable');
 
-        // FIXME: This should not be doing this wrapping; knex doesn't require an insert statement to return a value.
-        // testSql(query, 'insert into "testtable" ("x", "y") values (1, 2)');
         testSql(
             query,
-            'select IDENTITY_VAL_LOCAL() from FINAL TABLE(insert into "testtable" ("x", "y") values (1, 2))'
+            'insert into "testtable" ("x", "y") values (1, 2)'
+        );
+    });
+
+    it('supports insert with a returning clause', () =>
+    {
+        const record = {
+            x: 1,
+            y: 2,
+        };
+        const query = knex.insert(record).into('testtable').returning('id');
+
+        testSql(
+            query,
+            'select "id" from FINAL TABLE(insert into "testtable" ("x", "y") values (1, 2))'
+        );
+    });
+
+    it('supports insert with a returning clause and multiple columns', () =>
+    {
+        const record = {
+            x: 1,
+            y: 2,
+        };
+        const query = knex.insert(record).into('testtable').returning([ 'id', 'x' ]);
+
+        testSql(
+            query,
+            'select "id", "x" from FINAL TABLE(insert into "testtable" ("x", "y") values (1, 2))'
+        );
+    });
+
+    it('supports insert with a with clause', () =>
+    {
+        const record = {
+            x: 1,
+            y: 2,
+        };
+        const query = knex.with('withClause', knex.select('id').from('testtable')).insert(record).into('testtable');
+
+        testSql(
+            query,
+            'with "withClause" as (select "id" from "testtable") insert into "testtable" ("x", "y") values (1, 2)'
         );
     });
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
