@@ -16,8 +16,10 @@ class DB2QueryCompiler extends QueryCompiler
     {
         const insertValues = this.single.insert || [];
 
-        // DB2 doesn't support 'returning' rather you wrap the insert statement in a select statement with `FINAL TABLE`.
-        let sql = this.single.returning ? `select ${ this.formatter.columnize(this.single.returning) } from FINAL TABLE(` : '';
+        // DB2 doesn't support 'returning' rather you wrap the insert statement in a select statement with
+        // `FINAL TABLE`.
+        let sql = this.single.returning
+            ? `select ${ this.formatter.columnize(this.single.returning) } from FINAL TABLE(` : '';
 
         sql += `${ this.with() }insert into ${ this.tableName } `;
         const { returning } = this.single;
