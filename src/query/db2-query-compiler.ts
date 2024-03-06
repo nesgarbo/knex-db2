@@ -15,18 +15,13 @@ class DB2QueryCompiler extends QueryCompiler
     insert() : string | { sql : string; returning ?: any }
     {
         const insertValues = this.single.insert || [];
-        // we need to return a value
-        // we need to wrap the insert statement in a select statement
-        // we use the "IDENTITY_VAL_LOCAL()" function to return the IDENTITY
-        // unless specified in a return
-        let sql = `select ${
-            this.single.returning
-                ? this.formatter.columnize(this.single.returning)
-                : 'IDENTITY_VAL_LOCAL()'
-        } from FINAL TABLE(`;
+
+        // DB2 doesn't support 'returning' rather you wrap the insert statement in a select statement with `FINAL TABLE`.
+        let sql = this.single.returning ? `select ${ this.formatter.columnize(this.single.returning) } from FINAL TABLE(` : '';
+
         sql += `${ this.with() }insert into ${ this.tableName } `;
         const { returning } = this.single;
-        const returningSql = returning ? `${ this._returning('insert', returning) } ` : '';
+        const returningSql = returning ? `${ this._returning('insert', returning) }` : '';
 
         if(Array.isArray(insertValues))
         {
@@ -44,7 +39,11 @@ class DB2QueryCompiler extends QueryCompiler
         }
 
         sql += this._buildInsertData(insertValues, returningSql);
-        sql += ')';
+
+        if(this.single.returning)
+        {
+            sql += ')';
+        }
 
         return {
             sql,
