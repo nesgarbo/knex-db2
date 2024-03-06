@@ -2,11 +2,12 @@
 // Select Tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-const Knex = require('knex');
+import Knex from 'knex';
 
-const { DB2Dialect } = require('../../../dist/');
+import { DB2Dialect } from '../../src/';
 
-const testSql = require('../../utils/testSql');
+// Utils
+import { testSql } from '../utils/testSql';
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -16,7 +17,7 @@ const knex = Knex({
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-describe('Select', () =>
+describe('Select Statements', () =>
 {
     it('supports basic select', () =>
     {
@@ -136,7 +137,7 @@ describe('Select', () =>
 
     it('supports select with a fromRaw and bindings', () =>
     {
-        const query = knex.select([ 'x', 'y' ]).fromRaw('test where x = ?', [ 1 ]);
+        const query = knex.select([ 'x', 'y' ]).fromRaw(knex.raw('test where x = ?', [ 1 ]));
 
         testSql(query, 'select "x", "y" from test where x = 1');
     });

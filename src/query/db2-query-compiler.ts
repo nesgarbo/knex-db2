@@ -3,10 +3,14 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 import QueryCompiler from 'knex/lib/query/querycompiler';
-import isObject from 'lodash/isObject';
 import { rawOrFn as rawOrFn_ } from 'knex/lib/formatter/wrappingFormatter';
+
 import { format } from 'date-fns';
 import isEmpty from 'lodash/isEmpty';
+import isObject from 'lodash/isObject';
+
+// Utils
+import { hasOwn } from '../utils/objects';
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -84,7 +88,7 @@ class DB2QueryCompiler extends QueryCompiler
     {
         if(isObject(data))
         {
-            if(Object.hasOwn(data, 'migration_time'))
+            if(hasOwn(data, 'migration_time'))
             {
                 // @ts-expect-error - Typescript is being really dumb here
                 const parsed = new Date(data.migration_time);
@@ -166,7 +170,7 @@ class DB2QueryCompiler extends QueryCompiler
             = this.grouped.where && this.grouped.where.length > 0
                 ? this.grouped.where.map((where) =>
                 {
-                    if(Object.hasOwn(this.single.update, where.column))
+                    if(hasOwn(this.single.update, where.column))
                     {
                         return;
                     }

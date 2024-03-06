@@ -2,10 +2,14 @@
 // Delete Tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-const Knex = require('knex');
+import Knex from 'knex';
 
-const { DB2Dialect } = require('../../../dist/');
-const testSql = require('../../utils/testSql');
+import { DB2Dialect } from '../../src/';
+
+// Utils
+import { testSql } from '../utils/testSql';
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 const knex = Knex({
     client: DB2Dialect,
@@ -13,7 +17,7 @@ const knex = Knex({
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-describe('Delete', () =>
+describe('Delete Statements', () =>
 {
     it('supports basic delete', () =>
     {

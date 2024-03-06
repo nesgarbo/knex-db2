@@ -2,11 +2,12 @@
 // Insert Tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-const Knex = require('knex');
+import Knex from 'knex';
 
-const { DB2Dialect } = require('../../../dist/');
+import { DB2Dialect } from '../../src/';
 
-const testSql = require('../../utils/testSql');
+// Utils
+import { testSql } from '../utils/testSql';
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -16,7 +17,7 @@ const knex = Knex({
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-describe('Inserts', () =>
+describe('Insert Statements', () =>
 {
     it('supports basic insert', () =>
     {

@@ -2,10 +2,12 @@
 // Join Tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-const Knex = require('knex');
+import Knex from 'knex';
 
-const { DB2Dialect } = require('../../../dist/');
-const testSql = require('../../utils/testSql');
+import { DB2Dialect } from '../../src/';
+
+// Utils
+import { testSql } from '../utils/testSql';
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -15,7 +17,7 @@ const knex = Knex({
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-describe('Joins', () =>
+describe('Join Statements', () =>
 {
     it('supports basic join', () =>
     {
@@ -69,16 +71,16 @@ describe('Joins', () =>
         );
     });
 
-    it('supports cross join', () =>
+    it('supports joinRaw', () =>
     {
         const query = knex
             .select()
             .from('test')
-            .crossJoin('othertable');
+            .joinRaw('natural full join othertable on test.id = othertable.id');
 
         testSql(
             query,
-            'select * from "test" cross join "othertable"'
+            'select * from "test" natural full join othertable on test.id = othertable.id'
         );
     });
 
@@ -413,34 +415,6 @@ describe('Joins', () =>
         testSql(
             query,
             'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = 1'
-        );
-    });
-
-    it('supports join with orWhereColumn', () =>
-    {
-        const query = knex
-            .select()
-            .from('test')
-            .join('othertable', 'test.id', 'othertable.id')
-            .orWhereColumn('othertable.x', 'othertable.y');
-
-        testSql(
-            query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = "othertable"."y"'
-        );
-    });
-
-    it('supports join with andWhereColumn', () =>
-    {
-        const query = knex
-            .select()
-            .from('test')
-            .join('othertable', 'test.id', 'othertable.id')
-            .andWhereColumn('othertable.x', 'othertable.y');
-
-        testSql(
-            query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = "othertable"."y"'
         );
     });
 

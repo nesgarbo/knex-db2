@@ -7,11 +7,15 @@ import { Connection } from 'odbc';
 import { Knex, knex } from 'knex';
 import * as odbc from 'odbc';
 
+// Internal Classes
 import SchemaCompiler from './schema/db2-compiler';
 import TableCompiler from './schema/db2-table-compiler';
 import ColumnCompiler from './schema/db2-column-compiler';
 import Transaction from './execution/db2-transaction';
 import QueryCompiler from './query/db2-query-compiler';
+
+// Utils
+import { hasOwn } from './utils/objects';
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -126,21 +130,22 @@ class DB2Client extends knex.Client
 
     _getConnectionString(connectionConfig) : string
     {
-        const connectionStringParams
-            = connectionConfig.connectionStringParams || {};
-        const connectionStringExtension = Object.keys(
-            connectionStringParams
-        ).reduce((result, key) =>
-        {
-            const value = connectionStringParams[key];
-            return `${ result }${ key }=${ value };`;
-        }, '');
+        const connectionStringParams = connectionConfig.connectionStringParams || {};
+        const connectionStringExtension = Object.keys(connectionStringParams)
+            .reduce((result, key) =>
+            {
+                const value = connectionStringParams[key];
+                return `${ result }${ key }=${ value };`;
+            }, '');
 
-        return `${
-            `DRIVER=${ connectionConfig.driver };SYSTEM=${ connectionConfig.host };HOSTNAME=${ connectionConfig.host };`
-            + `PORT=${ connectionConfig.port };DATABASE=${ connectionConfig.database };`
-            + `UID=${ connectionConfig.user };PWD=${ connectionConfig.password };`
-        }${ connectionStringExtension }`;
+        return `DRIVER=${ connectionConfig.driver };`
+            + `SYSTEM=${ connectionConfig.host };`
+            + `HOSTNAME=${ connectionConfig.host };`
+            + `PORT=${ connectionConfig.port };`
+            + `DATABASE=${ connectionConfig.database };`
+            + `UID=${ connectionConfig.user };`
+            + `PWD=${ connectionConfig.password };`
+            + `${ connectionStringExtension }`;
     }
 
     // Runs the query on the specified connection, providing the bindings
@@ -151,11 +156,9 @@ class DB2Client extends knex.Client
         {
             obj = { sql: obj };
         }
-        const method = (
-            Object.hasOwn(obj, 'method') && obj.method !== 'raw'
-                ? obj.method
-                : obj.sql.split(' ')[0]
-        ).toLowerCase();
+        const method = (hasOwn(obj, 'method') && obj.method !== 'raw' ? obj.method : obj.sql.split(' ')[0])
+            .toLowerCase();
+
         obj.sqlMethod = method;
 
         // Different functions are used since query() doesn't return # of rows affected,

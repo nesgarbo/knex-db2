@@ -1,16 +1,28 @@
-const { expect } = require('chai');
+// ---------------------------------------------------------------------------------------------------------------------
+// Unit tests for the DB2 client.
+// ---------------------------------------------------------------------------------------------------------------------
 
-const { DB2Dialect } = require('../../dist/');
+import { expect } from 'chai';
+
+import DB2Dialect from '../src';
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 describe('DB2 Client', () =>
 {
-    const client = new DB2Dialect({ client: 'db2' });
+    let client: DB2Dialect;
+
+    beforeEach(() =>
+    {
+        client = new DB2Dialect({ client: 'db2' });
+    });
+
     it('can be initialized with just the client name in config', () =>
     {
         expect(new DB2Dialect({ client: 'db2' })).to.exist;
     });
 
-    describe('._getConnectionString', () =>
+    describe('Connection String', () =>
     {
         it('should return expected connection string', () =>
         {
@@ -23,7 +35,8 @@ describe('DB2 Client', () =>
                 driver: '{IBM Cli Driver}',
             };
             const expectedConnectionString
-                = `DRIVER=${ connectionConfig.driver };SYSTEM=${ connectionConfig.host };HOSTNAME=${ connectionConfig.host };`
+                = `DRIVER=${ connectionConfig.driver };SYSTEM=${ connectionConfig.host };`
+                + `HOSTNAME=${ connectionConfig.host };`
                 + `PORT=${ connectionConfig.port };DATABASE=${ connectionConfig.database };`
                 + `UID=${ connectionConfig.user };PWD=${ connectionConfig.password };`;
 
@@ -47,3 +60,5 @@ describe('DB2 Client', () =>
         });
     });
 });
+
+// ---------------------------------------------------------------------------------------------------------------------

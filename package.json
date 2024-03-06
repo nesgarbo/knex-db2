@@ -5,15 +5,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "/dist",
-    "/src"
+    "/dist"
   ],
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts",
-    "test": "mocha test/unit && mocha --recursive test/integration",
+    "build": "tsc",
+    "test": "ts-mocha -p tsconfig.json test/*.spec.ts test/**/*.spec.ts",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
@@ -25,7 +24,7 @@
   ],
   "author": {
     "name": "Christopher S. Case",
-    "web": "https://github.com/morgul"
+    "email": "chris.case@g33xnexus.com"
   },
   "repository": {
     "type": "git",
@@ -33,24 +32,20 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@faker-js/faker": "^8.3.1",
     "@types/chai": "^4.3.12",
     "@types/lodash": "^4.14.202",
     "@types/mocha": "^10.0.6",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
     "chai": "^4.4.1",
-    "debug": "^4.3.4",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "mocha": "^10.3.0",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
-    "tslib": "^2.6.2",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.3.1",
     "knex": "^3",
     "lodash": "^4.17.21",
     "odbc": "^2.4.8"

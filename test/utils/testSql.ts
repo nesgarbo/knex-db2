@@ -2,11 +2,11 @@
 // Test the sql query against the expected sql and bindings
 //----------------------------------------------------------------------------------------------------------------------
 
-const { expect } = require('chai');
+import { expect } from 'chai';
 
 //----------------------------------------------------------------------------------------------------------------------
 
-module.exports = (query, expectedSql, expectedBindings) =>
+export function testSql(query : any, expectedSql : string, expectedBindings ?: any[]) : void
 {
     expect(query.toString()).to.equal(expectedSql);
 
@@ -14,6 +14,6 @@ module.exports = (query, expectedSql, expectedBindings) =>
     {
         expect(query.toSQL().sql.bindings).to.deep.equal(expectedBindings);
     }
-};
+}
 
 //----------------------------------------------------------------------------------------------------------------------

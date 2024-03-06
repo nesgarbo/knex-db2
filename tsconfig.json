@@ -1,24 +1,38 @@
 {
-  "compilerOptions": {
-    "outDir": "./dist",
-    "target": "ESNext",
-    "module": "commonjs",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "useDefineForClassFields": true,
-    "strict": true,
-    "skipLibCheck": false,
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": false,
-    "noImplicitAny": false,
-    "forceConsistentCasingInFileNames": true,
-    "declaration": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "incremental": true,
+        "allowJs": true,
+        "checkJs": true,
+        "declaration": true,
+        "tsBuildInfoFile": ".tsbuildinfo",
+        "target": "es2020",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "strict": false,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "forceConsistentCasingInFileNames" : true,
+        "removeComments": true,
+        "noImplicitAny": false,
+        "alwaysStrict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "preserveSymlinks": true
+    },
+    "files": [
+        "src/index.ts"
+    ],
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }
