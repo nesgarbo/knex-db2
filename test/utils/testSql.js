@@ -1,9 +1,19 @@
-const { expect, } = require('chai')
+//----------------------------------------------------------------------------------------------------------------------
+// Test the sql query against the expected sql and bindings
+//----------------------------------------------------------------------------------------------------------------------
 
-module.exports = (query, expectedSql, expectedBindings) => {
-    expect(query.toString()).to.equal(expectedSql)
+const { expect } = require("chai");
 
-    if (expectedBindings) {
-        expect(query.toSQL().sql.bindings).to.deep.equal(expectedBindings)
+//----------------------------------------------------------------------------------------------------------------------
+
+module.exports = (query, expectedSql, expectedBindings) =>
+{
+    expect(query.toString()).to.equal(expectedSql);
+
+    if(expectedBindings)
+    {
+        expect(query.toSQL().sql.bindings).to.deep.equal(expectedBindings);
     }
-}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
