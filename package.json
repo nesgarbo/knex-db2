@@ -1,6 +1,6 @@
 {
   "name": "@morgul/knex-db2",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Knex dialect for IBM DB2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,8 @@
     "build": "tsc",
     "test": "ts-mocha -p tsconfig.json test/*.spec.ts test/**/*.spec.ts",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "knex",
