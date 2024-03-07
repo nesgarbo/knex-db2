@@ -6,7 +6,6 @@ import * as process from 'process';
 import { Knex, knex } from 'knex';
 import ibmdb, { Database } from 'ibm_db';
 
-
 // Internal Classes
 import SchemaCompiler from './schema/db2-compiler';
 import TableCompiler from './schema/db2-table-compiler';
@@ -65,7 +64,7 @@ class DB2Client extends knex.Client
 
         if(this.dialect && !this.config.client)
         {
-            this.logger.warn?.(
+            this.printWarn(
                 `Using 'this.dialect' to identify the client is deprecated and support for it will be removed in the `
                 + `future. Please use configuration option 'client' instead.`
             );
@@ -106,23 +105,6 @@ class DB2Client extends knex.Client
 
     wrapIdentifierImpl(value : string) : string
     {
-        // TODO: Might need to port this over to let array accessor works.
-        // if(value === '*')
-        // {
-        //     return value;
-        // }
-        //
-        // let arrayAccessor = '';
-        // const arrayAccessorMatch = value.match(/(.*?)(\[[0-9]+\])/);
-        //
-        // if(arrayAccessorMatch)
-        // {
-        //     value = arrayAccessorMatch[1];
-        //     arrayAccessor = arrayAccessorMatch[2];
-        // }
-        //
-        // return `"${ value.replace(/"/g, '""') }"${ arrayAccessor }`;
-
         return value;
     }
 
@@ -131,6 +113,22 @@ class DB2Client extends knex.Client
         if(process.env.DEBUG === 'true')
         {
             this.logger.debug?.(`knex-db2: ${ message }`);
+        }
+    }
+
+    printError(message : string) : void
+    {
+        if(process.env.DEBUG === 'true')
+        {
+            this.logger.error?.(`knex-db2: ${ message }`);
+        }
+    }
+
+    printWarn(message : string) : void
+    {
+        if(process.env.DEBUG === 'true')
+        {
+            this.logger.warn?.(`knex-db2: ${ message }`);
         }
     }
 
@@ -200,7 +198,6 @@ class DB2Client extends knex.Client
         }
         else
         {
-            await connection.beginTransaction();
             this.printDebug('transaction begun');
             try
             {
@@ -233,14 +230,7 @@ class DB2Client extends knex.Client
             }
             catch (err : any)
             {
-                this.printDebug(err);
-                await connection.rollbackTransaction();
-                throw new Error(err);
-            }
-            finally
-            {
-                this.printDebug('transaction committed');
-                await connection.commitTransaction();
+                this.printError(err);
             }
         }
 
