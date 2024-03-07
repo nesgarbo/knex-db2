@@ -164,13 +164,10 @@ class DB2Client extends knex.Client
             this.printDebug('transaction begun');
             try
             {
-                const statement = await connection.createStatement();
-                await statement.prepare(obj.sql);
-                if(obj.bindings)
-                {
-                    await statement.bind(obj.bindings);
-                }
-                const result = await statement.execute();
+                const statement = await connection.prepare(obj.sql);
+                const resultObj = await statement.execute(obj.bindings);
+                const result = await resultObj.fetchAll();
+
                 if(method === 'update')
                 {
                     if(obj.selectReturning)
@@ -197,13 +194,13 @@ class DB2Client extends knex.Client
             catch (err : any)
             {
                 this.printDebug(err);
-                await connection.rollback();
+                await connection.rollbackTransaction();
                 throw new Error(err);
             }
             finally
             {
                 this.printDebug('transaction committed');
-                await connection.commit();
+                await connection.commitTransaction();
             }
         }
 
