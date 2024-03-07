@@ -1,11 +1,9 @@
 {
     "compilerOptions": {
         "experimentalDecorators": true,
-        "incremental": true,
         "allowJs": true,
         "checkJs": true,
         "declaration": true,
-        "tsBuildInfoFile": ".tsbuildinfo",
         "target": "es2020",
         "module": "commonjs",
         "outDir": "./dist",
@@ -30,7 +28,7 @@
         "src/index.ts"
     ],
     "include": [
-        "src"
+        "src",
     ],
     "exclude": [
         "node_modules"

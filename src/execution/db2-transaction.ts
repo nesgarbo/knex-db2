@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 import Transaction from 'knex/lib/execution/transaction';
-import * as odbc from 'odbc';
+import { Database } from 'ibm_db';
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -10,19 +10,19 @@ import * as odbc from 'odbc';
 
 class DB2Transaction extends Transaction
 {
-    begin(connection : odbc.Connection) : any
+    begin(connection : Database) : any
     {
         return connection.beginTransaction();
     }
 
-    rollback(connection : odbc.Connection) : any
+    rollback(connection : Database) : any
     {
-        return connection.rollback();
+        return connection.rollbackTransaction();
     }
 
-    commit(connection : odbc.Connection) : any
+    commit(connection : Database) : any
     {
-        return connection.commit();
+        return connection.commitTransaction();
     }
 }
 

@@ -3,9 +3,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 import * as process from 'process';
-import { Connection } from 'odbc';
 import { Knex, knex } from 'knex';
-import * as odbc from 'odbc';
+import ibmdb, { Database } from 'ibm_db';
+
 
 // Internal Classes
 import SchemaCompiler from './schema/db2-compiler';
@@ -24,7 +24,7 @@ class DB2Client extends knex.Client
     constructor(config)
     {
         super(config);
-        this.driverName = 'odbc';
+        this.driverName = 'ibm_db';
 
         if(this.dialect && !this.config.client)
         {
@@ -64,7 +64,7 @@ class DB2Client extends knex.Client
 
     _driver() : any
     {
-        return odbc;
+        return ibmdb;
     }
 
     wrapIdentifierImpl(value) : string
@@ -96,36 +96,22 @@ class DB2Client extends knex.Client
 
     // Get a raw connection, called by the pool manager whenever a new
     // connection needs to be added to the pool.
-    async acquireRawConnection() : Promise<Connection>
+    async acquireRawConnection() : Promise<Database>
     {
         this.printDebug('acquiring raw connection');
         const connectionConfig = this.config.connection;
-        this.printDebug(this._getConnectionString(connectionConfig));
+        const connStr = this._getConnectionString(connectionConfig);
 
-        if(this.config?.pool)
-        {
-            const poolConfig = {
-                connectionString: this._getConnectionString(connectionConfig),
-                connectionTimeout: this.config?.acquireConnectionTimeout || 60000,
-                initialSize: this.config?.pool?.min || 2,
-                maxSize: this.config?.pool?.max || 10,
-                reuseConnection: true,
-            };
-            const pool = await this.driver.pool(poolConfig);
-            return pool.connect();
-        }
-
-        return this.driver.connect(
-            this._getConnectionString(connectionConfig)
-        );
+        this.printDebug(connStr);
+        return this.driver.open(connStr);
     }
 
     // Used to explicitly close a connection, called internally by the pool manager
     // when a connection times out or the pool is shutdown.
-    async destroyRawConnection(connection : Connection) : Promise<void>
+    async destroyRawConnection(connection : Database) : Promise<void>
     {
         this.printDebug('destroy connection');
-        return connection.close();
+        await connection.close();
     }
 
     _getConnectionString(connectionConfig) : string
@@ -185,22 +171,7 @@ class DB2Client extends knex.Client
                     await statement.bind(obj.bindings);
                 }
                 const result = await statement.execute();
-                // this is hacky we check the SQL for the ID column
-                // most dialects return the ID of the inserted
-                // we check for the IDENTITY scalar function
-                // if that function is present, then we just return the value of the
-                // IDENTITY column
-                if(result.statement.includes('IDENTITY_VAL_LOCAL()'))
-                {
-                    obj.response = {
-                        rows: result.map((row) =>
-                        {
-                            return (result.columns && result.columns?.length > 0) ? row[result.columns[0].name] : row;
-                        }),
-                        rowCount: result.count,
-                    };
-                }
-                else if(method === 'update')
+                if(method === 'update')
                 {
                     if(obj.selectReturning)
                     {
@@ -341,7 +312,6 @@ interface DB2ConnectionConfig
     port : 50000 | number;
     user : string;
     password : string;
-    driver : 'IBM DB2 Driver' | string;
     connectionStringParams ?: DB2ConnectionParams;
 }
 

@@ -45,9 +45,12 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@types/ibm_db": "^2.0.16",
     "date-fns": "^3.3.1",
-    "knex": "^3",
-    "lodash": "^4.17.21",
-    "odbc": "^2.4.8"
+    "ibm_db": "^3.2.3",
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {
+    "knex": ">=1.0.0"
   }
 }
