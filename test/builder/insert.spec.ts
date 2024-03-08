@@ -29,7 +29,7 @@ describe('Insert Statements', () =>
 
         testSql(
             query,
-            'insert into "testtable" ("x", "y") values (1, 2)'
+            'insert into testtable (x, y) values (1, 2)'
         );
     });
 
@@ -43,7 +43,7 @@ describe('Insert Statements', () =>
 
         testSql(
             query,
-            'select "id" from FINAL TABLE(insert into "testtable" ("x", "y") values (1, 2))'
+            'select id from FINAL TABLE(insert into testtable (x, y) values (1, 2))'
         );
     });
 
@@ -57,7 +57,7 @@ describe('Insert Statements', () =>
 
         testSql(
             query,
-            'select "id", "x" from FINAL TABLE(insert into "testtable" ("x", "y") values (1, 2))'
+            'select id, x from FINAL TABLE(insert into testtable (x, y) values (1, 2))'
         );
     });
 
@@ -71,7 +71,7 @@ describe('Insert Statements', () =>
 
         testSql(
             query,
-            'with "withClause" as (select "id" from "testtable") insert into "testtable" ("x", "y") values (1, 2)'
+            'with withClause as (select id from testtable) insert into testtable (x, y) values (1, 2)'
         );
     });
 });

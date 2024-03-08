@@ -28,7 +28,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id"'
+            'select * from test inner join othertable on test.id = othertable.id'
         );
     });
 
@@ -41,7 +41,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" left join "othertable" on "test"."id" = "othertable"."id"'
+            'select * from test left join othertable on test.id = othertable.id'
         );
     });
 
@@ -54,7 +54,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" right join "othertable" on "test"."id" = "othertable"."id"'
+            'select * from test right join othertable on test.id = othertable.id'
         );
     });
 
@@ -67,7 +67,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" full outer join "othertable" on "test"."id" = "othertable"."id"'
+            'select * from test full outer join othertable on test.id = othertable.id'
         );
     });
 
@@ -80,7 +80,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" natural full join othertable on test.id = othertable.id'
+            'select * from test natural full join othertable on test.id = othertable.id'
         );
     });
 
@@ -94,7 +94,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = 1'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x = 1'
         );
     });
 
@@ -108,7 +108,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" is null'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x is null'
         );
     });
 
@@ -122,7 +122,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" is not null'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x is not null'
         );
     });
 
@@ -132,14 +132,15 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .whereExists(function ()
+            .whereExists(function()
             {
-                this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                this.select('*').from('another').whereRaw('othertable.id = another.id');
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id where exists (select * from another '
+            + 'where othertable.id = another.id)'
         );
     });
 
@@ -149,14 +150,15 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .whereNotExists(function ()
+            .whereNotExists(function()
             {
-                this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                this.select('*').from('another').whereRaw('othertable.id = another.id');
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where not exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id where not exists (select * from '
+            + 'another where othertable.id = another.id)'
         );
     });
 
@@ -166,11 +168,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .whereBetween('othertable.x', [1, 10]);
+            .whereBetween('othertable.x', [ 1, 10 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x between 1 and 10'
         );
     });
 
@@ -180,11 +182,12 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .whereNotBetween('othertable.x', [1, 10]);
+            .whereNotBetween('othertable.x', [ 1, 10 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" not between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x not between 1 '
+            + 'and 10'
         );
     });
 
@@ -194,11 +197,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .whereIn('othertable.x', [1, 2, 3]);
+            .whereIn('othertable.x', [ 1, 2, 3 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" in (1, 2, 3)'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x in (1, 2, 3)'
         );
     });
 
@@ -208,11 +211,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .whereNotIn('othertable.x', [1, 2, 3]);
+            .whereNotIn('othertable.x', [ 1, 2, 3 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" not in (1, 2, 3)'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x not in (1, 2, 3)'
         );
     });
 
@@ -222,11 +225,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .whereRaw('"othertable"."x" = 1');
+            .whereRaw('othertable.x = 1');
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = 1'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x = 1'
         );
     });
 
@@ -240,7 +243,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = 1'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x = 1'
         );
     });
 
@@ -254,7 +257,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = 1'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x = 1'
         );
     });
 
@@ -268,7 +271,7 @@ describe('Join Statements', () =>
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" is null'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x is null'
         );
     });
 
@@ -278,14 +281,15 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .orWhereExists(function ()
+            .orWhereExists(function()
             {
-                this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                this.select('*').from('another').whereRaw('othertable.id = another.id');
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id where exists (select * from another '
+            + 'where othertable.id = another.id)'
         );
     });
 
@@ -295,14 +299,15 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .orWhereNotExists(function ()
+            .orWhereNotExists(function()
             {
-                this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                this.select('*').from('another').whereRaw('othertable.id = another.id');
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where not exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id where not exists (select * from '
+            + 'another where othertable.id = another.id)'
         );
     });
 
@@ -312,11 +317,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .orWhereBetween('othertable.x', [1, 10]);
+            .orWhereBetween('othertable.x', [ 1, 10 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x between 1 and 10'
         );
     });
 
@@ -326,11 +331,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .andWhereBetween('othertable.x', [1, 10]);
+            .andWhereBetween('othertable.x', [ 1, 10 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x between 1 and 10'
         );
     });
 
@@ -340,11 +345,12 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .orWhereNotBetween('othertable.x', [1, 10]);
+            .orWhereNotBetween('othertable.x', [ 1, 10 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" not between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x not between 1 '
+            + 'and 10'
         );
     });
 
@@ -354,11 +360,12 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .andWhereNotBetween('othertable.x', [1, 10]);
+            .andWhereNotBetween('othertable.x', [ 1, 10 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" not between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x not between 1 '
+            + 'and 10'
         );
     });
 
@@ -368,11 +375,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .orWhereIn('othertable.x', [1, 2, 3]);
+            .orWhereIn('othertable.x', [ 1, 2, 3 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" in (1, 2, 3)'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x in (1, 2, 3)'
         );
     });
 
@@ -382,11 +389,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .orWhereNotIn('othertable.x', [1, 2, 3]);
+            .orWhereNotIn('othertable.x', [ 1, 2, 3 ]);
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" not in (1, 2, 3)'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x not in (1, 2, 3)'
         );
     });
 
@@ -396,11 +403,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .orWhereRaw('"othertable"."x" = 1');
+            .orWhereRaw('othertable.x = 1');
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = 1'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x = 1'
         );
     });
 
@@ -410,11 +417,11 @@ describe('Join Statements', () =>
             .select()
             .from('test')
             .join('othertable', 'test.id', '=', 'othertable.id')
-            .andWhereRaw('"othertable"."x" = 1');
+            .andWhereRaw('othertable.x = 1');
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" where "othertable"."x" = 1'
+            'select * from test inner join othertable on test.id = othertable.id where othertable.x = 1'
         );
     });
 
@@ -423,14 +430,14 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
                 this.on('test.id', 'othertable.id').orOn('test.x', 'othertable.x');
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" or "test"."x" = "othertable"."x"'
+            'select * from test inner join othertable on test.id = othertable.id or test.x = othertable.x'
         );
     });
 
@@ -439,14 +446,14 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
                 this.on('test.id', 'othertable.id').andOn('test.x', 'othertable.x');
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" and "test"."x" = "othertable"."x"'
+            'select * from test inner join othertable on test.id = othertable.id and test.x = othertable.x'
         );
     });
 
@@ -455,17 +462,18 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
-                this.on('test.id', 'othertable.id').orOnExists(function ()
+                this.on('test.id', 'othertable.id').orOnExists(function()
                 {
-                    this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                    this.select('*').from('another').whereRaw('othertable.id = another.id');
                 });
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" or exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id or exists (select * from another '
+            + 'where othertable.id = another.id)'
         );
     });
 
@@ -474,17 +482,18 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
-                this.on('test.id', 'othertable.id').andOnExists(function ()
+                this.on('test.id', 'othertable.id').andOnExists(function()
                 {
-                    this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                    this.select('*').from('another').whereRaw('othertable.id = another.id');
                 });
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" and exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id and exists (select * from another '
+            + 'where othertable.id = another.id)'
         );
     });
 
@@ -493,17 +502,18 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
-                this.on('test.id', 'othertable.id').orOnNotExists(function ()
+                this.on('test.id', 'othertable.id').orOnNotExists(function()
                 {
-                    this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                    this.select('*').from('another').whereRaw('othertable.id = another.id');
                 });
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" or not exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id or not exists (select * from another '
+            + 'where othertable.id = another.id)'
         );
     });
 
@@ -512,17 +522,18 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
-                this.on('test.id', 'othertable.id').andOnNotExists(function ()
+                this.on('test.id', 'othertable.id').andOnNotExists(function()
                 {
-                    this.select('*').from('another').whereRaw('"othertable"."id" = "another"."id"');
+                    this.select('*').from('another').whereRaw('othertable.id = another.id');
                 });
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" and not exists (select * from "another" where "othertable"."id" = "another"."id")'
+            'select * from test inner join othertable on test.id = othertable.id and not exists (select * from another '
+            + 'where othertable.id = another.id)'
         );
     });
 
@@ -531,14 +542,14 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
-                this.on('test.id', 'othertable.id').orOnBetween('othertable.x', [1, 10]);
+                this.on('test.id', 'othertable.id').orOnBetween('othertable.x', [ 1, 10 ]);
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" or "othertable"."x" between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id or othertable.x between 1 and 10'
         );
     });
 
@@ -547,14 +558,14 @@ describe('Join Statements', () =>
         const query = knex
             .select()
             .from('test')
-            .join('othertable', function ()
+            .join('othertable', function()
             {
-                this.on('test.id', 'othertable.id').andOnBetween('othertable.x', [1, 10]);
+                this.on('test.id', 'othertable.id').andOnBetween('othertable.x', [ 1, 10 ]);
             });
 
         testSql(
             query,
-            'select * from "test" inner join "othertable" on "test"."id" = "othertable"."id" and "othertable"."x" between 1 and 10'
+            'select * from test inner join othertable on test.id = othertable.id and othertable.x between 1 and 10'
         );
     });
 });

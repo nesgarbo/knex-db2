@@ -24,23 +24,23 @@ describe('Select Statements', () =>
         const query = knex.select([ 'x', 'y' ]).from('test')
             .where('x', 1);
 
-        testSql(query, 'select "x", "y" from "test" where "x" = 1');
+        testSql(query, 'select x, y from test where x = 1');
     });
 
     it('supports select with whereIn', () =>
     {
         const query = knex.select([ 'x', 'y' ]).from('test')
-            .whereIn('x', [1, 2, 3]);
+            .whereIn('x', [ 1, 2, 3 ]);
 
-        testSql(query, 'select "x", "y" from "test" where "x" in (1, 2, 3)');
+        testSql(query, 'select x, y from test where x in (1, 2, 3)');
     });
 
     it('supports select with whereNotIn', () =>
     {
         const query = knex.select([ 'x', 'y' ]).from('test')
-            .whereNotIn('x', [1, 2, 3]);
+            .whereNotIn('x', [ 1, 2, 3 ]);
 
-        testSql(query, 'select "x", "y" from "test" where "x" not in (1, 2, 3)');
+        testSql(query, 'select x, y from test where x not in (1, 2, 3)');
     });
 
     it('supports select with whereNull', () =>
@@ -48,7 +48,7 @@ describe('Select Statements', () =>
         const query = knex.select([ 'x', 'y' ]).from('test')
             .whereNull('x');
 
-        testSql(query, 'select "x", "y" from "test" where "x" is null');
+        testSql(query, 'select x, y from test where x is null');
     });
 
     it('supports select with whereNotNull', () =>
@@ -56,7 +56,7 @@ describe('Select Statements', () =>
         const query = knex.select([ 'x', 'y' ]).from('test')
             .whereNotNull('x');
 
-        testSql(query, 'select "x", "y" from "test" where "x" is not null');
+        testSql(query, 'select x, y from test where x is not null');
     });
 
     it('supports select with whereExists', () =>
@@ -66,7 +66,7 @@ describe('Select Statements', () =>
 
         testSql(
             query,
-            'select "x", "y" from "test" where exists (select "x", "y" from "othertable" where "x" = 1)'
+            'select x, y from test where exists (select x, y from othertable where x = 1)'
         );
     });
 
@@ -77,7 +77,7 @@ describe('Select Statements', () =>
 
         testSql(
             query,
-            'select "x", "y" from "test" where not exists (select "x", "y" from "othertable" where "x" = 1)'
+            'select x, y from test where not exists (select x, y from othertable where x = 1)'
         );
     });
 
@@ -86,7 +86,7 @@ describe('Select Statements', () =>
         const query = knex.select([ 'x', 'y' ]).from('test')
             .whereRaw('x = 1');
 
-        testSql(query, 'select "x", "y" from "test" where x = 1');
+        testSql(query, 'select x, y from test where x = 1');
     });
 
     it('supports select with whereRaw and bindings', () =>
@@ -94,22 +94,32 @@ describe('Select Statements', () =>
         const query = knex.select([ 'x', 'y' ]).from('test')
             .whereRaw('x = ?', [ 1 ]);
 
-        testSql(query, 'select "x", "y" from "test" where x = 1');
+        testSql(query, 'select x, y from test where x = 1');
     });
 
     it('supports select with .as()', () =>
     {
-        const query = knex.select([ 'x', 'y' ]).from('test')
-            .as('t');
+        const query = knex.avg('sum_column1')
+            .from(function()
+            {
+                this.sum('column1 as sum_column1')
+                    .from('t1')
+                    .groupBy('column1')
+                    .as('t1');
+            })
+            .as('ignored_alias');
 
-        testSql(query, 'select "x", "y" from "test" as "t"');
+        testSql(
+            query,
+            'select avg(sum_column1) from (select sum(column1) as sum_column1 from t1 group by column1) as t1'
+        );
     });
 
     it('supports select with as in string', () =>
     {
         const query = knex.select([ 'x as foo', 'y' ]).from('test');
 
-        testSql(query, 'select "x" as "foo", "y" from "test"');
+        testSql(query, 'select x as foo, y from test');
     });
 
     it('supports select with a ref', () =>
@@ -117,7 +127,7 @@ describe('Select Statements', () =>
         const query = knex.select([ 'x', 'y' ]).from('test')
             .where('x', knex.ref('y'));
 
-        testSql(query, 'select "x", "y" from "test" where "x" = "y"');
+        testSql(query, 'select x, y from test where x = y');
     });
 
     it('supports select with a ref and a table', () =>
@@ -125,21 +135,21 @@ describe('Select Statements', () =>
         const query = knex.select([ 'x', 'y' ]).from('test')
             .where('x', knex.ref('y').withSchema('test'));
 
-        testSql(query, 'select "x", "y" from "test" where "x" = "test"."y"');
+        testSql(query, 'select x, y from test where x = test.y');
     });
 
     it('supports select with a fromRaw', () =>
     {
         const query = knex.select([ 'x', 'y' ]).fromRaw('test');
 
-        testSql(query, 'select "x", "y" from test');
+        testSql(query, 'select x, y from test');
     });
 
     it('supports select with a fromRaw and bindings', () =>
     {
         const query = knex.select([ 'x', 'y' ]).fromRaw(knex.raw('test where x = ?', [ 1 ]));
 
-        testSql(query, 'select "x", "y" from test where x = 1');
+        testSql(query, 'select x, y from test where x = 1');
     });
 
     it('supports a with clause', () =>
@@ -148,7 +158,7 @@ describe('Select Statements', () =>
             .select([ 'x', 'y' ])
             .from('t');
 
-        testSql(query, 'with "t" as (select "x", "y" from "test") select "x", "y" from "t"');
+        testSql(query, 'with t as (select x, y from test) select x, y from t');
     });
 });
 
