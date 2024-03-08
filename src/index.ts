@@ -54,7 +54,6 @@ export interface DB2Config
     pool ?: Knex.PoolConfig;
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 
 class DB2Client extends knex.Client
@@ -105,23 +104,26 @@ class DB2Client extends knex.Client
         return ibmdb;
     }
 
-    wrapIdentifierImpl(value) : string
+    wrapIdentifierImpl(value : string) : string
     {
-        if(value === '*')
-        {
-            return value;
-        }
+        // TODO: Might need to port this over to let array accessor works.
+        // if(value === '*')
+        // {
+        //     return value;
+        // }
+        //
+        // let arrayAccessor = '';
+        // const arrayAccessorMatch = value.match(/(.*?)(\[[0-9]+\])/);
+        //
+        // if(arrayAccessorMatch)
+        // {
+        //     value = arrayAccessorMatch[1];
+        //     arrayAccessor = arrayAccessorMatch[2];
+        // }
+        //
+        // return `"${ value.replace(/"/g, '""') }"${ arrayAccessor }`;
 
-        let arrayAccessor = '';
-        const arrayAccessorMatch = value.match(/(.*?)(\[[0-9]+\])/);
-
-        if(arrayAccessorMatch)
-        {
-            value = arrayAccessorMatch[1];
-            arrayAccessor = arrayAccessorMatch[2];
-        }
-
-        return `"${ value.replace(/"/g, '""') }"${ arrayAccessor }`;
+        return value;
     }
 
     printDebug(message : string) : void
