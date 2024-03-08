@@ -25,7 +25,8 @@
         "preserveSymlinks": true
     },
     "files": [
-        "src/index.ts"
+        "src/index.ts",
+        "types/knex-shim.d.ts"
     ],
     "include": [
         "src",
