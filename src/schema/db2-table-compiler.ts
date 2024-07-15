@@ -83,7 +83,7 @@ class Db2TableCompiler extends TableCompiler
         );
     }
 
-    // All of the columns to "add" for the query
+    // All the columns to "add" for the query
     addColumns(columns, prefix) : void
     {
         prefix = prefix || this.addColumnsPrefix;

@@ -227,6 +227,10 @@ class DB2Client extends knex.Client
                 {
                     obj.response = { rows: result, rowCount: result.count };
                 }
+
+                // Close objects
+                await statement.close();
+                await resultObj.close();
             }
             catch (err : any)
             {
