@@ -234,7 +234,9 @@ class DB2Client extends knex.Client
             }
             catch (err : any)
             {
-                this.printError(err);
+                this.printError(err);                
+                console.error(err);
+                throw new Error(err);
             }
         }
 
