@@ -198,43 +198,26 @@ class DB2Client extends knex.Client
         }
         else
         {
-            this.printDebug('transaction begun');
             try
             {
                 const statement = await connection.prepare(obj.sql);
-                const resultObj = await statement.execute(obj.bindings);
-                const result = await resultObj.fetchAll();
-
-                if(method === 'update')
+                if(obj.returning)
                 {
-                    if(obj.selectReturning)
-                    {
-                        const returningSelect = await connection.query(obj.selectReturning);
-                        obj.response = {
-                            rows: returningSelect,
-                            rowCount: result.count,
-                        };
-                    }
-                    else
-                    {
-                        obj.response = {
-                            rows: result,
-                            rowCount: result.count,
-                        };
-                    }
+                    const resultObj = await statement.execute(obj.bindings);
+                    const result = await resultObj.fetchAll();
+                    obj.response = { rows: result, rowCount: result.length };
+                    await resultObj.close();
                 }
                 else
                 {
-                    obj.response = { rows: result, rowCount: result.count };
+                    const result = await statement.executeNonQuery(obj.bindings);
+                    obj.response = { rowCount: result };
                 }
-
-                // Close objects
                 await statement.close();
-                await resultObj.close();
             }
             catch (err : any)
             {
-                this.printError(err);                
+                this.printError(err);
                 throw new Error(err);
             }
         }
@@ -275,8 +258,7 @@ class DB2Client extends knex.Client
             return null;
         }
 
-        const resp = obj.response;
-        const method = obj.sqlMethod;
+        const { response: resp, sqlMethod: method, returning } = obj;
         const { rows, rowCount } = resp;
 
         if(obj.output)
@@ -293,11 +275,10 @@ class DB2Client extends knex.Client
             case 'first':
                 return rows[0];
             case 'insert':
-                return rows;
             case 'del':
             case 'delete':
             case 'update':
-                if(obj.selectReturning)
+                if(returning)
                 {
                     return rows;
                 }
