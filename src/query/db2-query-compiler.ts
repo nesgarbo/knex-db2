@@ -154,7 +154,7 @@ class DB2QueryCompiler extends QueryCompiler
         };
     }
 
-    update() : { sql : string; returning : any; selectReturning : string }
+    update() : { sql : string; returning : any; }
     {
         const withSQL = this.with();
         const updates = this._prepUpdate(this.single.update);
@@ -162,45 +162,26 @@ class DB2QueryCompiler extends QueryCompiler
         const order = this.order();
         const limit = this.limit();
         const { returning } = this.single;
-        // const values = Object.values(this.single.update)
-        //     .map((a) => `${ a }`)
-        //     .join(', ');
 
-        const moreWheres
-            = this.grouped.where && this.grouped.where.length > 0
-                ? this.grouped.where.map((where) =>
-                {
-                    if(hasOwn(this.single.update, where.column))
-                    {
-                        return;
-                    }
-                    if(!where.value)
-                    {
-                        return;
-                    }
-                    return `"${ where.column }" ${ where.not ? '!' : '' }${ where.operator } ${ where.value }`;
-                })
-                : [];
+        let sql = '';
+        if(returning)
+        {
+            sql += `select ${ this.formatter.columnize(this.single.returning) } from FINAL TABLE(`;
+        }
 
-        const selectReturning = returning ? `select ${ returning.map((item) => `"${ item }"`).join(', ') }
-                                             from ${
-    this.tableName
-}
-                                             where ${ Object.entries(this.single.update)
-        .map(([ key, value ]) => `"${ key }" = '${ value }'`)
-        .join(' and ') }${ moreWheres.length > 0 && ' and ' }${ moreWheres.join(
-    ' and '
-) }`
-            : '';
-
-        const sql = `${ withSQL }update ${ this.single.only ? 'only ' : '' }${ this.tableName }`
+        sql += `${ withSQL }update ${ this.single.only ? 'only ' : '' }${ this.tableName }`
             + ` set ${
                 updates.join(', ')
             }${ where ? ` ${ where }` : ''
             }${ order ? ` ${ order }` : ''
             }${ limit ? ` ${ limit }` : '' }`;
 
-        return { sql, returning, selectReturning };
+        if(returning)
+        {
+            sql += ')';
+        }
+
+        return { sql, returning };
     }
 
     _returning(method, value, withTrigger = false) : string | void

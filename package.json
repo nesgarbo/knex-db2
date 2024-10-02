@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "ts-mocha -p tsconfig.json test/*.spec.ts test/**/*.spec.ts",
+    "test": "mocha --require tsx \"test/**/*.spec.ts\"",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build"
@@ -44,6 +44,7 @@
     "mocha": "^10.3.0",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.1",
     "typescript": "^5.4.2"
   },
   "dependencies": {
