@@ -62,7 +62,8 @@ describe('Select Statements', () =>
     it('supports select with whereExists', () =>
     {
         const query = knex.select([ 'x', 'y' ]).from('test')
-            .whereExists(knex.select([ 'x', 'y' ]).from('othertable').where('x', 1));
+            .whereExists(knex.select([ 'x', 'y' ]).from('othertable')
+                .where('x', 1));
 
         testSql(
             query,
@@ -73,7 +74,8 @@ describe('Select Statements', () =>
     it('supports select with whereNotExists', () =>
     {
         const query = knex.select([ 'x', 'y' ]).from('test')
-            .whereNotExists(knex.select([ 'x', 'y' ]).from('othertable').where('x', 1));
+            .whereNotExists(knex.select([ 'x', 'y' ]).from('othertable')
+                .where('x', 1));
 
         testSql(
             query,
@@ -159,6 +161,24 @@ describe('Select Statements', () =>
             .from('t');
 
         testSql(query, 'with t as (select x, y from test) select x, y from t');
+    });
+
+    it('supports complex where clauses', () =>
+    {
+        const query = knex.select('*')
+            .from('t')
+            .where('t.x', 1)
+            .where((q1) =>
+            {
+                q1.whereIn('t.y', [ 2, 3 ])
+                    .orWhere((q2) =>
+                    {
+                        q2.where('t.y', 4)
+                            .andWhere('t.z', 5);
+                    });
+            });
+
+        testSql(query, 'select * from t where t.x = 1 and (t.y in (2, 3) or (t.y = 4 and t.z = 5))');
     });
 });
 
