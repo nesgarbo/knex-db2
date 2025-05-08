@@ -34,18 +34,18 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/chai": "^5.2.0",
+    "@types/chai": "^5.2.2",
     "@types/lodash": "^4.17.16",
     "@types/mocha": "^10.0.10",
-    "@typescript-eslint/eslint-plugin": "^8.26.1",
-    "@typescript-eslint/parser": "^8.26.1",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
     "chai": "^5.2.0",
-    "eslint": "^9.22.0",
-    "mocha": "^11.1.0",
+    "eslint": "^9.26.0",
+    "mocha": "^11.2.2",
     "ts-mocha": "^11.1.0",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@types/ibm_db": "^3.2.0",
